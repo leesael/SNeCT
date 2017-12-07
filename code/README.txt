@@ -60,7 +60,7 @@
  		*The example of configuration file is in demo folder.
  		*Notice that SNeCT ver 1.0 uses static variables for faster performance. We are planning to make dynamic version for next version.
  	
- 	[Step 3] Compile and run S3CMTF
+ 	[Step 3] Compile and run SNeCT
 
 		If you successfully install all libraries, "make" command will create a binary file, "SNeCT".
 
@@ -74,4 +74,4 @@
 
 3. Demo
 
-	Please see demo folder to understand how to run S3CMTF. Demo tensor is a part of PanCan12 dataset, created as 100x1,000x5 size with 279,906 observable entries.
+	Please see demo folder to understand how to run SNeCT. Demo tensor is a part of PanCan12 dataset, created as 100x1,000x5 size with 279,906 observable entries.
