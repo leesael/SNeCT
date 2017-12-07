@@ -1,0 +1,1 @@
+./SNeCT config_demo.txt pancan12_demo.tensor result
