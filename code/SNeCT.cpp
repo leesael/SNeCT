@@ -84,10 +84,16 @@ char* ResultPath;
 
 /////////////////////////////////////////////////
 
+//[Input] Lower range x, upper range y
+//[Output] Random double precision number between x and y
+//[Function] Generate random floating point number between given two numbers
 double frand(double x, double y) { //return the random value in (x,y) interval
 	return ((y - x)*((double)rand() / RAND_MAX)) + x;
 }
 
+//[Input] A double precision number x
+//[Output] Absolute value of x
+//[Function] Get absolute value of input x
 double abss(double x) { //return the absolute value of x
 	return x > 0 ? x : -x;
 }
@@ -238,7 +244,7 @@ void Update_Factor_Matrices() {
 			double Sigma[MAX_CORE_TENSOR_DIMENSIONALITY];
 			//Updating Factor matrices
 			int jjj;
-			for (jjj = 1; jjj <= order; jjj++) {//ith Factor Matrix
+			for (jjj = 1; jjj <= order; jjj++) {//i-th Factor Matrix
 				int l;
 				int column_size = coreSize[jjj];
 				for (l = 1; l <= column_size; l++) {
@@ -416,7 +422,7 @@ void SNeCT() {
 		avertime += omp_get_wtime() - itertime;
 		printf("iter%d :      RMSE : %lf\tElapsed Time : %lf\n", ++iter, trainRMSE, omp_get_wtime() - itertime);
 		
-		learnRate = initialLearnRate / (1+alpha*iter);//(1 + initialLearnRate * 100 * iter);
+		learnRate = initialLearnRate / (1+alpha*iter);
 		timeHistory[iter - 1] = omp_get_wtime() - itertime;
 		trainRmseHistory[iter - 1] = trainRMSE;
 		if (trainRMSE != trainRMSE) {
@@ -515,7 +521,7 @@ int main(int argc, char* argv[]) {
 
 	Print();
 
-	//PrintTime();
+	//PrintTime(); //Use for experiment
 
 	return 0;
 }
