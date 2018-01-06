@@ -18,8 +18,28 @@
     
 	SNeCT performs tensor decomposition with network constraintinto HOSVD format.
     Moreover, factors extracted from SNeCT are used to analyze subtypes for each modes, patients, genes, and platforms.
+
+2. Files
 	
-2. Usage
+	This package contains following files
+
+	- Makefile : generate excutable SNeCT
+	- SNeCT.cpp : source code of SNeCT
+	- demo/ : demo running files
+	  - demo/run.sh : shell script for demo run
+	  - demo/gene_network_demo.matrix : small matrix data for demo run
+	  - demo/pancan12_demo.tensor : small tensor data for demo run
+	  - demo/config_demo.txt : SNeCT configuration for demo run
+	  - demo/dic/ : dictionary for indices of demo matrix and tensor data
+	    - demo/dic/tcga_dic_demo.txt : dictionary of the 1st dimension of the tensor
+	    - demo/dic/gene_dic_demo.txt : dictionary of the 2nd dimension of the tensor
+	    - demo/dic/platform_dic_demo.txt : dictionary of the 3rd dimension of the tensor
+	- lib/ : library files
+	  - lib/armadillo-7.700.0.tar.xz : armadillo linear algebra library
+	  - lib/blas-3.7.0.tgz : BLAS linear algebra package
+	  - lib/lapack-3.7.0.tgz : LAPACK linear algebra package
+
+3. Usage
 	
 	[Step 1] Install Armadillo and OpenMP libraries.
 
@@ -72,6 +92,14 @@
 
 		ex) result/FACTOR1, result/CORETENSOR
 
-3. Demo
+4. Demo
 
-	Please see demo folder to understand how to run SNeCT. Demo tensor is a part of PanCan12 dataset, created as 100x1,000x5 size with 279,906 observable entries.
+	Please follow this procedure to run demo to understand how to run SNeCT.
+
+	1. cd demo
+	2. sh run.sh
+
+	Then, SNeCT is run on a demo tensor and gene network which is a part of PanCan12 dataset, created as size of 100x1,000x5 with 279,906 observable entries.
+	After execution, you can see factorization results in 'result' directory, while the intermediate process is presented on screen. following output files are generated.
+	'demo/result/FACTOR<n>' shows the n-th factor matrix. The factor matrix is a stack of vectors representing latent factor weights of each entity.
+	'demo/result/CORETENSOR' shows the core tensor of Tucker decomposition. The core tensor represents the degree of strength between factors in different dimensions.

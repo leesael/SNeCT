@@ -1,0 +1,5 @@
+1	MIR
+2	MET
+3	CNV
+4	GEX
+5	MUT
