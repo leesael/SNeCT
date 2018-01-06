@@ -30,6 +30,7 @@
 	  - demo/gene_network_demo.matrix : small matrix data for demo run
 	  - demo/pancan12_demo.tensor : small tensor data for demo run
 	  - demo/config_demo.txt : SNeCT configuration for demo run
+	  - demo/SNeCT : SNeCT executable file
 	  - demo/dic/ : dictionary for indices of demo matrix and tensor data
 	    - demo/dic/tcga_dic_demo.txt : dictionary of the 1st dimension of the tensor
 	    - demo/dic/gene_dic_demo.txt : dictionary of the 2nd dimension of the tensor
