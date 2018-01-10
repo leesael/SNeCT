@@ -101,6 +101,6 @@
 	2. sh run.sh
 
 	Then, SNeCT is run on a demo tensor and gene network which is a part of PanCan12 dataset, created as size of 100x1,000x5 with 279,906 observable entries.
-	After execution, you can see factorization results in 'result' directory, while the intermediate process is presented on screen. following output files are generated.
+	After execution, you can see factorization results in 'result' directory, while the intermediate process is presented on screen. The following output files are generated.
 	'demo/result/FACTOR<n>' shows the n-th factor matrix. The factor matrix is a stack of vectors representing latent factor weights of each entity.
 	'demo/result/CORETENSOR' shows the core tensor of Tucker decomposition. The core tensor represents the degree of strength between factors in different dimensions.

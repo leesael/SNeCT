@@ -135,7 +135,6 @@ void Getting_Input() {
 
 	entryNumCum[numCoupledMat + 1] = totalN;
 
-
 	for (i = 1; i <= numCoupledMat; i++) {
 		fcouple = fopen(CoupledPath[i], "r");
 		for (j = 1; j <= coupleEntryNum[i]; j++) {
