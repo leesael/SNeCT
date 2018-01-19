@@ -41,6 +41,8 @@
 	  - lib/lapack-3.7.0.tgz : LAPACK linear algebra package
 
 3. Usage
+
+	**This program is available in Linux environment
 	
 	[Step 1] Install Armadillo and OpenMP libraries.
 
@@ -50,7 +52,7 @@
 
 		Notice that Armadillo needs LAPACK and BLAS libraries, and they are also attached in lib directory.
 
-		Above OpenMP version 2.0 is required for SNeCT.
+		OpenMP version 2.0 is required for parallel SGD update of SNeCT.
 
 	[Step 2] Adjusting config and source files
 

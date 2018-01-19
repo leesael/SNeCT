@@ -103,8 +103,14 @@ double abss(double x) { //return the absolute value of x
 //[Function] Getting all entries of input tensor X and network constraint Y
 void Getting_Input() {
 	FILE *fin = fopen(TrainPath, "r");
+	FILE *fin2 = fopen(TrainPath, "r");
 	FILE *fcouple;
 	FILE *config = fopen(ConfigPath, "r");
+
+	char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
 	//INPUT
 	double Timee = clock();
 	int errorFlag=0;
@@ -164,8 +170,20 @@ void Getting_Input() {
 
 	entryNumCum[numCoupledMat + 1] = totalN;
 
+	read = getline(&line, &len, fin2);
+	while (line[0] == '%') {
+		read = getline(&line, &len, fin);
+		read = getline(&line, &len, fin2);
+	}
+
 	for (i = 1; i <= numCoupledMat; i++) {
 		fcouple = fopen(CoupledPath[i], "r");
+		fin2 = fopen(CoupledPath[i], "r");
+		read = getline(&line, &len, fin2);
+		while (line[0] == '%') {
+			read = getline(&line, &len, fcouple);
+			read = getline(&line, &len, fin2); 
+		}
 		for (j = 1; j <= coupleEntryNum[i]; j++) {
 			fscanf(fcouple, "%d", &k);
 			coupleMatIndex[i][j][1] = k;
@@ -176,7 +194,7 @@ void Getting_Input() {
 			fscanf(fcouple, "%lf", &coupledEntries[i][j]);
 		}
 	}
-
+	
 	for (i = 1; i <= trainEntryNum; i++) {
 		for (j = 1; j <= order; j++) {
 			fscanf(fin, "%d", &k);

@@ -1,3 +1,11 @@
+% Lines beginning with '%' are regarded as comments
+% Network matrix data input must follow following format
+% <Index_1>\t<Index_2>\t<value>
+% This example data is a sample of PanCan-12 data
+% Size:
+%	- Number of entries: 3205
+%	- Dimension: 1000 x 1000
+% Format: <gene ID>\t<gene ID>\t<value=1 if relationship exists>
 915	822	1
 915	652	1
 915	709	1
