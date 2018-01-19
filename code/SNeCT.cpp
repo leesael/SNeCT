@@ -36,11 +36,11 @@ using namespace arma;
 
 /////////      Pre-defined values      ///////////
 
-#define MAX_ORDER 4							//The max order/way of input tensor
-#define MAX_INPUT_DIMENSIONALITY 15000     //The max dimensionality/mode length of input tensor
-#define MAX_CORE_TENSOR_DIMENSIONALITY 100	//The max dimensionality/mode length of core tensor
-#define MAX_ENTRY 2500000						//The max number of entries in input tensor
-#define MAX_CORE_SIZE 100000					//The max number of entries in core tensor
+#define MAX_ORDER 3							//The max order/way of input tensor
+#define MAX_INPUT_DIMENSIONALITY 1000    //The max dimensionality/mode length of input tensor
+#define MAX_CORE_TENSOR_DIMENSIONALITY 10	//The max dimensionality/mode length of core tensor
+#define MAX_ENTRY 280000						//The max number of entries in input tensor
+#define MAX_CORE_SIZE 500					//The max number of entries in core tensor
 #define MAX_ITER 2000						//The maximum iteration number
 
 /////////////////////////////////////////////////
@@ -48,30 +48,30 @@ using namespace arma;
 
 /////////      Variables           ///////////
 
-int threadsNum, order, dimensionality[MAX_ORDER], coreSize[MAX_ORDER], trainIndex[MAX_ENTRY][MAX_ORDER], trainEntryNum, coreNum = 1, coreIndex[MAX_CORE_SIZE][MAX_ORDER], coupleDim[MAX_ORDER], iterNum=100, nanFlag = 0, nanCount = 0;
+int threadsNum, order, dimensionality[MAX_ORDER+1], coreSize[MAX_ORDER+1], trainIndex[MAX_ENTRY+1][MAX_ORDER+1], trainEntryNum, coreNum = 1, coreIndex[MAX_CORE_SIZE+1][MAX_ORDER+1], coupleDim[MAX_ORDER+1], iterNum=100, nanFlag = 0, nanCount = 0;
 int i, j, k, l, aa, bb, ee, ff, gg, hh, ii, jj, kk, ll;
-int indexPermute[MAX_ORDER*MAX_ENTRY];
-double trainEntries[MAX_ENTRY], sTime, trainRMSE, minv = 2147483647, maxv = -2147483647;
-double facMat[MAX_ORDER][MAX_INPUT_DIMENSIONALITY][MAX_CORE_TENSOR_DIMENSIONALITY], coreEntries[MAX_CORE_SIZE];
+int indexPermute[MAX_ORDER*MAX_ENTRY+1];
+double trainEntries[MAX_ENTRY+1], sTime, trainRMSE, minv = 2147483647, maxv = -2147483647;
+double facMat[MAX_ORDER+1][MAX_INPUT_DIMENSIONALITY+1][MAX_CORE_TENSOR_DIMENSIONALITY+1], coreEntries[MAX_CORE_SIZE+1];
 
 int numCoupledMat;
-int coupleEntryNum[MAX_ORDER*2];
+int coupleEntryNum[MAX_ORDER+1];
 int entryNumCum[MAX_ORDER*2];
 int totalN = 0;
-int coupleMatIndex[MAX_ORDER][MAX_ENTRY][3];
+int coupleMatIndex[MAX_ORDER+1][MAX_ENTRY+1][3];
 double lambdaGraph;
-double coupledEntries[MAX_ORDER][MAX_ENTRY];
-int coupleWhere[MAX_ORDER][2][MAX_INPUT_DIMENSIONALITY];
+double coupledEntries[MAX_ORDER+1][MAX_ENTRY+1];
+int coupleWhere[MAX_ORDER+1][2][MAX_INPUT_DIMENSIONALITY+1];
 
 double errorForTrain[MAX_ENTRY], trainNorm, error;
 
-vector<int> trainWhere[MAX_ORDER][MAX_INPUT_DIMENSIONALITY], coreWhere[MAX_ORDER][MAX_CORE_TENSOR_DIMENSIONALITY];
+vector<int> trainWhere[MAX_ORDER+1][MAX_INPUT_DIMENSIONALITY+1], coreWhere[MAX_ORDER+1][MAX_CORE_TENSOR_DIMENSIONALITY+1];
 double lambdaReg=0.1;
 double initialLearnRate=0.001;
 double learnRate;
-double tempCore[MAX_CORE_SIZE];
-int Mul[MAX_ORDER], tempPermu[MAX_ORDER], rowcount;
-double timeHistory[MAX_ITER], trainRmseHistory[MAX_ITER];
+double tempCore[MAX_CORE_SIZE+1];
+int Mul[MAX_ORDER+1], tempPermu[MAX_ORDER+1], rowcount;
+double timeHistory[MAX_ITER+1], trainRmseHistory[MAX_ITER+1];
 double alpha=0.5;
 int iter = 0;
 
@@ -79,7 +79,7 @@ int iter = 0;
 
 char* ConfigPath;
 char* TrainPath;
-char CoupledPath[MAX_ORDER][100];
+char CoupledPath[MAX_ORDER+1][100];
 char* ResultPath;
 
 /////////////////////////////////////////////////
@@ -107,20 +107,41 @@ void Getting_Input() {
 	FILE *config = fopen(ConfigPath, "r");
 	//INPUT
 	double Timee = clock();
+	int errorFlag=0;
 	printf("Reading input\n");
 	fscanf(config, "%d", &order);
+	if (order>MAX_ORDER){
+		printf("\nTensor order is too large! Edit 'MAX_ORDER' in source code larger than or equal to %d!\n",order);
+		errorFlag=1;
+	}
 	for (i = 1; i <= order; i++) {
 		fscanf(config, "%d", &dimensionality[i]);
+		if (dimensionality[i]>MAX_INPUT_DIMENSIONALITY){
+			printf("\n%d-th dimension of tensor is too large! Edit 'MAX_INPUT_DIMENSIONALITY' in source code larger than or equal to the %d-th dimension size %d\n",i,i,dimensionality[i]);
+			errorFlag=1;
+		}
 	}
 	for (i = 1; i <= order; i++) {
 		fscanf(config, "%d", &coreSize[i]);
 		coreNum *= coreSize[i];
+		if (coreSize[i]>MAX_CORE_TENSOR_DIMENSIONALITY){
+			printf("\n%d-th dimension of core tensor has been set too large! Edit 'MAX_CORE_TENSOR_DIMENSIONALITY' in source code larger than or equal to the %d-th core size %d!\n",i,i,coreSize[i]);
+			errorFlag=1;
+		}
+	}
+	if (coreNum>MAX_CORE_SIZE){
+		printf("\nCore tensor is too large! Edit 'MAX_CORE_SIZE' in source code larger than or equal to the number of core tensor entries %d!\n",coreNum);
+		errorFlag=1;
 	}
 	fscanf(config, "%d", &threadsNum);
 	omp_set_num_threads(threadsNum);
 
 	fscanf(config, "%d", &trainEntryNum);
 	totalN += trainEntryNum;
+	if (trainEntryNum>MAX_ENTRY){
+		printf("\nThere are too many tensor entries! Edit 'MAX_ENTRY' in source code larger than or equal to the number of tensor entries %d!\n",trainEntryNum);
+		errorFlag=1;
+	}
 
 	fscanf(config, "%d", &numCoupledMat);
 
@@ -130,8 +151,16 @@ void Getting_Input() {
 		fscanf(config, "%d", &coupleEntryNum[i]);
 		entryNumCum[i] = totalN;
 		totalN += coupleEntryNum[i];
+		if (coupleEntryNum[i]>MAX_ENTRY){
+			printf("\nThere are too many network matrix entries! Edit 'MAX_ENTRY' in source code larger than or equal to the number of the network matrix entries %d!\n",coupleEntryNum[i]);
+			errorFlag=1;
+		}
 	}
 	fclose(config);
+
+	if (errorFlag){
+		exit(1);
+	}
 
 	entryNumCum[numCoupledMat + 1] = totalN;
 
