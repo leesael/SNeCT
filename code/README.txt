@@ -16,7 +16,7 @@
 
     SNeCT is a fast and scalable method for tensor decomposition with network constraint
     
-	SNeCT performs tensor decomposition with network constraintinto HOSVD format.
+	SNeCT performs tensor decomposition with network constraint into HOSVD format.
     Moreover, factors extracted from SNeCT are used to analyze subtypes for each modes, patients, genes, and platforms.
 
 2. Files
@@ -25,6 +25,7 @@
 
 	- Makefile : generate excutable SNeCT
 	- SNeCT.cpp : source code of SNeCT
+	- SNeCT_prediction.cpp : source code of profile prediction for new query tensor
 	- demo/ : demo running files
 	  - demo/run.sh : shell script for demo run
 	  - demo/gene_network_demo.matrix : small matrix data for demo run
@@ -81,7 +82,6 @@
 		#define MAX_ITER	 						<- Maximum iteration number, default value is set to 2000
  
  		*The example of configuration file is in demo folder.
- 		*Notice that SNeCT ver 1.0 uses static variables for faster performance. We are planning to make dynamic version for next version.
  	
  	[Step 3] Compile and run SNeCT
 
@@ -95,14 +95,30 @@
 
 		ex) result/FACTOR1, result/CORETENSOR
 
+	[Step 4] Query tensor profiling
+
+		After you successfully factorize the given data tensor, you can use SNeCT_predict to get embedding of a new patient without decomposing the whole tensor. 
+
+		SNeCT_predict takes 14 additional arguments, which are path of input query tensor, number of query entries, path of first factor matrix, path of second factor matrix, path of third factor matrix, length of first mode, length of second mode, length of third mode, path of core tensor, first mode rank size, second mode rank size, third mode rank size, path to store prediction results.
+
+		ex) ./SNeCT_predict query_tensor 1000 result/FACTOR1 result/FACTOR2 result/FACTOR3 100 1000 5 result/CORETENSOR 10 10 5 prediction
+
 4. Demo
 
 	Please follow this procedure to run demo to understand how to run SNeCT.
 
 	1. cd demo
-	2. sh run.sh
+	2. sh demo.sh
 
 	Then, SNeCT is run on a demo tensor and gene network which is a part of PanCan12 dataset, created as size of 100x1,000x5 with 279,906 observable entries.
 	After execution, you can see factorization results in 'result' directory, while the intermediate process is presented on screen. The following output files are generated.
 	'demo/result/FACTOR<n>' shows the n-th factor matrix. The factor matrix is a stack of vectors representing latent factor weights of each entity.
 	'demo/result/CORETENSOR' shows the core tensor of Tucker decomposition. The core tensor represents the degree of strength between factors in different dimensions.
+
+	After factorization is over successfully, follow this procedure to run prediction demo.
+
+	3. sh demo_prediction.sh
+
+	Then, you can see predicted profile of query patient in 'prediction' directory. The following output files are generated.
+	'demo/prediction/PROFILE' shows the predicted profile vector of the query patient tensor. 
+	'demo/prediction/TOP10' shows the ID of top-10 similar patients of the query patient.

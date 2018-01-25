@@ -1,0 +1,1 @@
+./SNeCT_predict query_tensor 1000 result/FACTOR1 result/FACTOR2 result/FACTOR3 100 1000 5 result/CORETENSOR 10 10 5 prediction

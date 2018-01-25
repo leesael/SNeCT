@@ -10,9 +10,12 @@
 * This software is free of charge under research purposes.
 * For commercial purposes, please contact the author.
 *
+* File: SNeCT.cpp
+*   - SNeCT performs Tucker decomposition with network constraint. SNeCT extracts factor matrices for each mode and a core tensor.
+*
 * Usage:
 * To compile SNeCT, type following command:
-*   - make all
+*   - make SNeCT
 */
 
 /////    Header files     /////
@@ -484,7 +487,7 @@ void SNeCT() {
 
 	printf("\nOrthogonalize and update core tensor...\n\n");
 
-	Orthogonalize();
+	//Orthogonalize();
 
 	printf("\nTotal update ended.\tFinal RMSE : %lf\tTotal Elapsed time: %lf\n", trainRMSE, omp_get_wtime() - sTime);
 }
