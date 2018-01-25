@@ -13,17 +13,14 @@ OPT = -O2 -mcmodel=medium  -fopenmp
 
 CXXFLAGS = $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)
 
-all: SNeCT SNeCT_predict
+all: search_profile_for_query
 
 
-SNeCT: SNeCT.cpp 
-	$(CXX) $(CXXFLAGS)  -o $@  $< $(LIB_FLAGS)
-
-SNeCT_predict: SNeCT_predict.cpp 
+search_profile_for_query: search_profile_for_query.cpp 
 	$(CXX) $(CXXFLAGS)  -o $@  $< $(LIB_FLAGS)
 
 
 .PHONY: clean
 
 clean:
-	rm -f SNeCT SNeCT_predict
+	rm -f search_profile_for_query
