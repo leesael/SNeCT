@@ -27,15 +27,14 @@
 	- SNeCT.cpp : source code of SNeCT
 	- SNeCT_prediction.cpp : source code of profile prediction for new query tensor
 	- demo/ : demo running files
-	  - demo/run.sh : shell script for demo run
-	  - demo/gene_network_demo.matrix : small matrix data for demo run
+	  - demo/demo.sh : shell script for demo run
+	  - demo/demo_prediction.sh : shell script for demo run of query profile prediction
 	  - demo/pancan12_demo.tensor : small tensor data for demo run
+	  - demo/gene_network_demo.matrix : small matrix data for demo run
+	  - demo/query_tensor : small query tensor for patient profile prediction demo
 	  - demo/config_demo.txt : SNeCT configuration for demo run
 	  - demo/SNeCT : SNeCT executable file
-	  - demo/dic/ : dictionary for indices of demo matrix and tensor data
-	    - demo/dic/tcga_dic_demo.txt : dictionary of the 1st dimension of the tensor
-	    - demo/dic/gene_dic_demo.txt : dictionary of the 2nd dimension of the tensor
-	    - demo/dic/platform_dic_demo.txt : dictionary of the 3rd dimension of the tensor
+	  - demo/SNeCT_predict : SNeCT_predict executable file
 	- lib/ : library files
 	  - lib/armadillo-7.700.0.tar.xz : armadillo linear algebra library
 	  - lib/blas-3.7.0.tgz : BLAS linear algebra package
