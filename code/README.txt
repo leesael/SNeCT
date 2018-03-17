@@ -2,7 +2,7 @@
 #   SNeCT: Integrative cancer data analysis via large scale network constrained tensor decomposition
 #   
 #   Authors: Dongjin Choi (skywalker5@snu.ac.kr), Seoul National University
-#            Lee Sael (sael@sunykorea.ac.kr), SUNY Korea
+#            Lee Sael (saellee@snu.ac.kr), SUNY Korea
 #   
 #   Version : 1.0
 #   Date: 2017-10-10
