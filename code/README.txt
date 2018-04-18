@@ -84,7 +84,7 @@
  	
  	[Step 3] Compile and run SNeCT
 
-		If you successfully install all libraries, "make" command will create a binary file, "SNeCT".
+		If you successfully install all libraries, "make" command will create a binary files, "SNeCT", and "SNeCT_predict".
 
 		The binary file takes three arguments, which are path of configuration file, path of input tensor file, path of result directory.
 

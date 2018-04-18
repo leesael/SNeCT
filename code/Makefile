@@ -19,6 +19,9 @@ all: SNeCT
 SNeCT: SNeCT.cpp 
 	$(CXX) $(CXXFLAGS)  -o $@  $< $(LIB_FLAGS)
 
+SNeCT_predict: SNeCT_predict.cpp 
+	$(CXX) $(CXXFLAGS)  -o $@  $< $(LIB_FLAGS)
+
 
 .PHONY: clean
 
