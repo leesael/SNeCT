@@ -13,7 +13,7 @@ OPT = -O2 -mcmodel=medium  -fopenmp
 
 CXXFLAGS = $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)
 
-all: SNeCT
+all: SNeCT SNeCT_predict
 
 
 SNeCT: SNeCT.cpp 
@@ -26,4 +26,4 @@ SNeCT_predict: SNeCT_predict.cpp
 .PHONY: clean
 
 clean:
-	rm -f SNeCT
+	rm -f SNeCT SNeCT_predict
