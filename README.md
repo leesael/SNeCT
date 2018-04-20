@@ -30,3 +30,8 @@ Data
 | :------------ | :-----------: | :-------------: |------------: |:------------------: |
 | PanCan12     | Patient - Gene - Platform | 4,555 &times; 14,351 &times; 5 | 183,211,020 | [DOWN](https://datalab.snu.ac.kr/data/SNeCT/pancan12_tensor.tar.gz) |
 | Pathway    | Gene - Gene | 14,351 &times; 14,351 | 665,429 | [DOWN](https://datalab.snu.ac.kr/data/SNeCT/pathway_network.tar.gz) |
+
+
+Experiments
+---------------
+[Download]((https://datalab.snu.ac.kr/data/SNeCT/SNeCT_reproduce.zip)) code and data for experiments in the paper.
