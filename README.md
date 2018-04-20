@@ -34,4 +34,4 @@ Data
 
 Experiments
 ---------------
-[Download]((https://datalab.snu.ac.kr/data/SNeCT/SNeCT_reproduce.zip)) code and data for experiments in the paper.
+[Download](https://datalab.snu.ac.kr/data/SNeCT/SNeCT_reproduce.zip) code and data for experiments in the paper.
