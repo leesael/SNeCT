@@ -1,7 +1,7 @@
 /*
 * @file        SNeCT.cpp
 * @author      Dongjin Choi (skywalker5@snu.ac.kr), Seoul National University
-* @author      Lee Sael (sael@sunykorea.ac.kr), SUNY Korea
+* @author      Lee Sael (saellee@snu.ac.kr), Seoul National University
 * @version     1.0
 * @date        2017-10-10
 *
