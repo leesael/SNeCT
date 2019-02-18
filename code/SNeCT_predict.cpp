@@ -3,7 +3,7 @@
 * @author      Dongjin Choi (skywalker5@snu.ac.kr), Seoul National University
 * @author      Lee Sael (saellee@snu.ac.kr), Seoul National University
 * @version     1.0
-* @date        2017-10-10
+* @date        2019-02-10
 *
 * SNeCT: Integrative cancer data analysis via large scale network constrained tensor decomposition
 *
@@ -44,7 +44,7 @@ using namespace arma;
 #define MAX_CORE_TENSOR_DIMENSIONALITY 100	//The max dimensionality/mode length of core tensor
 #define MAX_ENTRY 100000						//The max number of entries in input tensor
 #define MAX_CORE_SIZE 625000					//The max number of entries in core tensor
-#define MAX_ITER 1000						//The maximum iteration number
+#define MAX_ITER 100						//The maximum iteration number
 
 /////////////////////////////////////////////////
 
@@ -100,7 +100,7 @@ void Initialize() {
 	double Timee = clock();
 	FILE *fin = fopen(queryPath, "r");
 	initialLearnRate = 0.001;
-	iterNum=10;
+	iterNum=MAX_ITER;
 	learnRate = initialLearnRate;
 	alpha = 0.5;
 	lambdaReg = 0.1;

@@ -3,7 +3,7 @@
 * @author      Dongjin Choi (skywalker5@snu.ac.kr), Seoul National University
 * @author      Lee Sael (saellee@snu.ac.kr), Seoul National University
 * @version     1.0
-* @date        2017-10-10
+* @date        2019-02-10
 *
 * SNeCT: Integrative cancer data analysis via large scale network constrained tensor decomposition
 *
@@ -40,18 +40,18 @@ using namespace arma;
 /////////      Pre-defined values      ///////////
 
 #define MAX_ORDER 3							//The max order/way of input tensor
-#define MAX_INPUT_DIMENSIONALITY 1000    //The max dimensionality/mode length of input tensor
-#define MAX_CORE_TENSOR_DIMENSIONALITY 10	//The max dimensionality/mode length of core tensor
-#define MAX_ENTRY 280000						//The max number of entries in input tensor
-#define MAX_CORE_SIZE 500					//The max number of entries in core tensor
-#define MAX_ITER 2000						//The maximum iteration number
+#define MAX_INPUT_DIMENSIONALITY 15000    //The max dimensionality/mode length of input tensor
+#define MAX_CORE_TENSOR_DIMENSIONALITY 100	//The max dimensionality/mode length of core tensor
+#define MAX_ENTRY 115000000						//The max number of entries in input tensor
+#define MAX_CORE_SIZE 20000					//The max number of entries in core tensor
+#define MAX_ITER 100						//The maximum iteration number
 
 /////////////////////////////////////////////////
 
 
 /////////      Variables           ///////////
 
-int threadsNum, order, dimensionality[MAX_ORDER+1], coreSize[MAX_ORDER+1], trainIndex[MAX_ENTRY+1][MAX_ORDER+1], trainEntryNum, coreNum = 1, coreIndex[MAX_CORE_SIZE+1][MAX_ORDER+1], coupleDim[MAX_ORDER+1], iterNum=100, nanFlag = 0, nanCount = 0;
+int threadsNum, order, dimensionality[MAX_ORDER+1], coreSize[MAX_ORDER+1], trainIndex[MAX_ENTRY+1][MAX_ORDER+1], trainEntryNum, coreNum = 1, coreIndex[MAX_CORE_SIZE+1][MAX_ORDER+1], coupleDim[MAX_ORDER+1], iterNum=MAX_ITER, nanFlag = 0, nanCount = 0;
 int i, j, k, l, aa, bb, ee, ff, gg, hh, ii, jj, kk, ll;
 int indexPermute[MAX_ORDER*MAX_ENTRY+1];
 double trainEntries[MAX_ENTRY+1], sTime, trainRMSE, minv = 2147483647, maxv = -2147483647;
@@ -62,7 +62,7 @@ int coupleEntryNum[MAX_ORDER+1];
 int entryNumCum[MAX_ORDER*2];
 int totalN = 0;
 int coupleMatIndex[MAX_ORDER+1][MAX_ENTRY+1][3];
-double lambdaGraph;
+double lambdaGraph=1.0;
 double coupledEntries[MAX_ORDER+1][MAX_ENTRY+1];
 int coupleWhere[MAX_ORDER+1][2][MAX_INPUT_DIMENSIONALITY+1];
 
@@ -111,8 +111,8 @@ void Getting_Input() {
 	FILE *config = fopen(ConfigPath, "r");
 
 	char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
+	size_t len = 0;
+	ssize_t read;
 
 	//INPUT
 	double Timee = clock();
@@ -126,7 +126,7 @@ void Getting_Input() {
 	for (i = 1; i <= order; i++) {
 		fscanf(config, "%d", &dimensionality[i]);
 		if (dimensionality[i]>MAX_INPUT_DIMENSIONALITY){
-			printf("\n%d-th dimension of tensor is too large! Edit 'MAX_INPUT_DIMENSIONALITY' in source code larger than or equal to the %d-th dimension size %d\n",i,i,dimensionality[i]);
+			printf("\n%d-th dimension of tensor is too large! Edit 'MAX_INPUT_DIMENSIONALITY=%d' in source code larger than or equal to the %d-th dimension size %d\n",i,MAX_INPUT_DIMENSIONALITY,i,dimensionality[i]);
 			errorFlag=1;
 		}
 	}
@@ -134,7 +134,7 @@ void Getting_Input() {
 		fscanf(config, "%d", &coreSize[i]);
 		coreNum *= coreSize[i];
 		if (coreSize[i]>MAX_CORE_TENSOR_DIMENSIONALITY){
-			printf("\n%d-th dimension of core tensor has been set too large! Edit 'MAX_CORE_TENSOR_DIMENSIONALITY' in source code larger than or equal to the %d-th core size %d!\n",i,i,coreSize[i]);
+			printf("\n%d-th dimension of core tensor has been set too large! Edit 'MAX_CORE_TENSOR_DIMENSIONALITY=%d' in source code larger than or equal to the %d-th core size %d!\n",MAX_CORE_TENSOR_DIMENSIONALITY,i,i,coreSize[i]);
 			errorFlag=1;
 		}
 	}
@@ -148,7 +148,7 @@ void Getting_Input() {
 	fscanf(config, "%d", &trainEntryNum);
 	totalN += trainEntryNum;
 	if (trainEntryNum>MAX_ENTRY){
-		printf("\nThere are too many tensor entries! Edit 'MAX_ENTRY' in source code larger than or equal to the number of tensor entries %d!\n",trainEntryNum);
+		printf("\nThere are too many tensor entries! Edit 'MAX_ENTRY=%d' in source code larger than or equal to the number of tensor entries %d!\n",MAX_ENTRY,trainEntryNum);
 		errorFlag=1;
 	}
 
@@ -170,6 +170,7 @@ void Getting_Input() {
 	if (errorFlag){
 		exit(1);
 	}
+	printf("finished reading config\n");
 
 	entryNumCum[numCoupledMat + 1] = totalN;
 
@@ -178,6 +179,7 @@ void Getting_Input() {
 		read = getline(&line, &len, fin);
 		read = getline(&line, &len, fin2);
 	}
+	printf("finished reading tensor\n");
 
 	for (i = 1; i <= numCoupledMat; i++) {
 		fcouple = fopen(CoupledPath[i], "r");
@@ -197,7 +199,9 @@ void Getting_Input() {
 			fscanf(fcouple, "%lf", &coupledEntries[i][j]);
 		}
 	}
-	
+	printf("finished reading graph\n");
+
+
 	for (i = 1; i <= trainEntryNum; i++) {
 		for (j = 1; j <= order; j++) {
 			fscanf(fin, "%d", &k);
@@ -542,7 +546,19 @@ void PrintTime() {
 //[Output] Core tensor G and factor matrices U^{(n)} (n=1...N)
 //[Function] Performing SNeCT which decomposes a network-constrained tensor
 int main(int argc, char* argv[]) {
-	if (argc == 4) {
+	if (argc == 6) {
+		ConfigPath = argv[1];
+		TrainPath = argv[2];
+		ResultPath = argv[3];
+		lambdaGraph = atof(argv[4]);
+        if(atoi(argv[5])<MAX_ITER) iterNum = atoi(argv[5]); 
+	}else if (argc == 5) {
+
+		ConfigPath = argv[1];
+		TrainPath = argv[2];
+		ResultPath = argv[3];
+		lambdaGraph = atof(argv[4]);
+	}else if (argc == 4) {
 
 		ConfigPath = argv[1];
 		TrainPath = argv[2];
@@ -574,3 +590,4 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
